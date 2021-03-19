@@ -6,7 +6,7 @@
 /*   By: adupuy <adupuy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/19 15:39:51 by adupuy            #+#    #+#             */
-/*   Updated: 2020/11/19 15:44:55 by adupuy           ###   ########.fr       */
+/*   Updated: 2021/03/18 10:47:06 by adupuy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,8 @@ int				ft_isascii(int c);
 int				ft_isdigit(int c);
 
 int				ft_isprint(int c);
+
+int				ft_isspace(char c);
 
 void			*ft_memccpy(void *dst, const void *src, int c, size_t n);
 
@@ -77,6 +79,7 @@ char			*ft_strjoin(char const *s1, char const *s2);
 char			*ft_strtrim(char const *s1, char const *set);
 
 char			**ft_split(char const *s, char c);
+void			*ft_free(char **split, int j);
 
 char			*ft_itoa(int c);
 
