@@ -6,7 +6,7 @@
 /*   By: adupuy <adupuy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/17 17:40:59 by adupuy            #+#    #+#             */
-/*   Updated: 2021/03/18 10:58:05 by adupuy           ###   ########.fr       */
+/*   Updated: 2021/03/22 10:45:41 by adupuy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ int		moving_forward(char *str, int i)
 	if (str[i] == '"')
 	{
 		i++;
-		while (str[i] != '"' && is_escaped(str, i - 1) == 1)
+		while (str[i] != '"' || (str[i] == '"' && is_escaped(str, i - 1) == 1))
 			i++;
 	}
 	else if (str[i] == '\'')

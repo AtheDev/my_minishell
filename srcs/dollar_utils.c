@@ -6,7 +6,7 @@
 /*   By: adupuy <adupuy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/12 14:14:32 by adupuy            #+#    #+#             */
-/*   Updated: 2021/03/12 14:42:19 by adupuy           ###   ########.fr       */
+/*   Updated: 2021/03/22 14:13:59 by adupuy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,8 +27,8 @@ int	save_value(char **tmp, char *env)
 	while (env[++i] != '\0')
 		count++;
 	*tmp = ft_substr(env, index, count);
-	*tmp = ft_strjoin("\"", *tmp);
-	*tmp = ft_strjoin(*tmp, "\"");
+//	*tmp = ft_strjoin("\"", *tmp);
+//	*tmp = ft_strjoin(*tmp, "\"");
 	if (*tmp == NULL)
 		return (0);
 	return (1);
@@ -64,8 +64,14 @@ int	swap_var_env(char **tmp, char **line, int pos, int size_var)
 
 	size_tmp = ft_strlen(*tmp);
 	str = ft_substr(*line, 0, pos);
+	if (str == NULL)
+		return (-1);
 	str = ft_strjoin(str, *tmp);
+	if (str == NULL)
+		return (-1);
 	str = add_str(str, *line, size_var + pos + 1);
+	if (str == NULL)
+		return (-1);
 	free(*line);
 	*line = str;
 	return (1);
@@ -81,12 +87,12 @@ int	search_var_env(char **tmp, t_env *env, int size_tmp)
 	{
 		if (ft_my_strncmp(env->var_env[i], *tmp, size_tmp) == 0)
 		{
-			printf("env->var_env[%d] = %s\n", i, env->var_env[i]);
+		//	printf("env->var_env[%d] = %s\n", i, env->var_env[i]);
 			free(*tmp);
 			*tmp = NULL;
 			if (save_value(tmp, env->var_env[i]) == 0)
 				return (-1);
-			printf("after save_value tmp = %s\n", *tmp);
+		//	printf("after save_value tmp = %s\n", *tmp);
 			return (1);
 		}
 		i++;

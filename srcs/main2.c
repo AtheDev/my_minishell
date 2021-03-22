@@ -6,25 +6,11 @@
 /*   By: adupuy <adupuy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/18 13:51:03 by adupuy            #+#    #+#             */
-/*   Updated: 2021/03/19 10:28:35 by adupuy           ###   ########.fr       */
+/*   Updated: 2021/03/22 14:07:11 by adupuy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-void	print_lst(t_list *lst)
-{
-	t_list *tmp;
-
-	tmp = lst;
-	while (lst->next != NULL)
-	{
-		printf("1 => lst = %s\n", lst->content);
-		lst = lst->next;
-	}
-	printf("2 => lst = %s\n", lst->content);
-	lst = tmp;
-}
 
 void	clear_cmd_tmp(t_list *cmd)
 {
@@ -84,15 +70,19 @@ int	main(int argc, char **argv, char **envp)
 		return (EXIT_FAILURE);
 	ret = 0;
 	line = NULL;
-	cmd_tmp = NULL;
-	cmd = NULL;
+//	cmd_tmp = NULL;
+//	cmd = NULL;
 	while (1)
 	{
+	cmd_tmp = NULL;
+	cmd = NULL;
+	line = NULL;	
 		write(0, "$> ", 3);
 		ret = get_next_line(0, &line, 0);
 		if (ret == -1)
 			printf("Error lors de la lecture de l'input du user\n");
-		if (analysis_line(&line, -1, &cmd_tmp) < 1)
+		ret = analysis_line(&line, -1, &cmd_tmp);
+		if (ret < 0)
 		{
 			if (line != NULL)
 				free(line);
@@ -100,18 +90,23 @@ int	main(int argc, char **argv, char **envp)
 			if (cmd_tmp != NULL)
 				clear_cmd_tmp(cmd_tmp);
 			get_next_line(0, &line, 1);
+			printf("DEAD\n");
 			return (EXIT_FAILURE);
 		}
-		print_lst(cmd_tmp);
-		save_cmd(&cmd, cmd_tmp);
+		if (ret > 0)
+		{
+	//	print_lst(cmd_tmp);
+			save_cmd(&cmd, cmd_tmp);
+			process_shell(&env, &cmd);
+		}
 		if (cmd_tmp != NULL)
 			clear_cmd_tmp(cmd_tmp);
 		if (cmd != NULL)
 			clear_cmd(cmd);
-		get_next_line(0, &line, 1);
+	//	get_next_line(0, &line, 1);
 		if (line != NULL)
 			free(line);
-		clear_env(&env);
+	//	clear_env(&env);
 	}
 	return (0);
 }

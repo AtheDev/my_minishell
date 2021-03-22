@@ -6,7 +6,7 @@
 /*   By: adupuy <adupuy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/12 11:41:38 by adupuy            #+#    #+#             */
-/*   Updated: 2021/03/18 19:50:00 by adupuy           ###   ########.fr       */
+/*   Updated: 2021/03/22 09:36:05 by adupuy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,7 +91,7 @@ char	*delete_char(char *line, int *pos)
 		return (process_free(tmp, tmp2));
 	line = ft_strjoin(tmp, tmp2);
 	process_free(tmp, tmp2);
-	if (tmp == NULL)
+	if (line == NULL)
 		return (process_free(tmp, tmp2));
 	*pos = *pos - 1;
 	return (line);

@@ -6,13 +6,11 @@
 /*   By: adupuy <adupuy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/18 16:40:32 by adupuy            #+#    #+#             */
-/*   Updated: 2021/03/18 23:21:58 by adupuy           ###   ########.fr       */
+/*   Updated: 2021/03/22 15:13:08 by adupuy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-void	print_arg_cmd(char **arg);
 
 int	save_cmd_tmp(t_list **cmd, char *line, int start_cmd, int end_cmd)
 {
@@ -103,42 +101,6 @@ void	ft_lstadd_back_cmd(t_list_cmd **cmd, t_list_cmd *new)
 	}
 	else
 		*cmd = new;
-}
-
-void	print_arg_cmd(char **arg_cmd)
-{
-	int	i;
-
-	i = -1;
-	while (arg_cmd[++i] != NULL)
-		printf("arg_cmd[%d] = %s\n", i, arg_cmd[i]);
-	printf("arg_cmd[%d] = %s\n", i, arg_cmd[i]);
-}
-
-void	print_struct(t_list_cmd *lst)
-{
-	t_list_cmd	*tmp;
-
-	tmp = lst;
-	printf("lst->cmd = %s\n", lst->cmd);
-	printf("lst->semicolon = %d\n", lst->semicolon);
-	printf("lst->pipe = %d\n", lst->pipe);
-	printf("lst->nb_redir = %d\n", lst->nb_redir);
-	print_arg_cmd(lst->arg_cmd);
-}
-
-void	print_struct_complete(t_list_cmd **cmd)
-{
-	t_list_cmd	*tmp;
-
-	tmp = *cmd;
-	while ((*cmd)->next_cmd != NULL)
-	{
-		print_struct(*cmd);
-		(*cmd) = (*cmd)->next_cmd;
-	}
-	print_struct(*cmd);
-	(*cmd) = tmp;
 }
 
 int	save_cmd(t_list_cmd **cmd, t_list *cmd_tmp)
