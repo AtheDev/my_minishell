@@ -6,7 +6,7 @@
 /*   By: adupuy <adupuy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/22 17:22:35 by adupuy            #+#    #+#             */
-/*   Updated: 2021/03/26 12:02:12 by adupuy           ###   ########.fr       */
+/*   Updated: 2021/03/26 13:54:23 by adupuy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -491,18 +491,61 @@ int	ft_cd(char **arg, t_env **env)
 	return (1);
 }
 
+int	check_value_arg(char *str)
+{
+	int	i;
+
+	i = 0;
+
+	if (str[i] == '-' || str[i] == '+')
+		i++;
+	if (str[i] == '\0')
+		return (0);
+	while (str[i] != '\0')
+	{
+		if (ft_isdigit(str[i]) == 0)
+			return (0);
+		i++;
+	}
+	return (1);
+}
+
 int	ft_exit(char **arg, t_env **env)
 {
-	(void)env;
+	int	val;
+
+	if (arg[1] == NULL)
+	{
+		printf("exit\n");
+		(*env)->return_value = 0;
+		(*env)->exit = 1;
+		return (1);
+	}
 	if (arg[1] != NULL)
 	{
-		arg[1] = edit_arg(arg[1] *env);
+		arg[1] = edit_arg(arg[1], *env);
 		if (arg[1] == NULL)
+			return (0);
+		if (check_value_arg(arg[1]) == 0)
+		{
+			printf("exit\nbash: exit: %s : argument numérique nécessaire\n", arg[1]);
+			(*env)->return_value = 2;
+			(*env)->exit = 1;
+			return (0);
+		}
 	}
 	if (check_nb_arg(arg, 0) > 2)
 	{
 		printf("%s\nbash: exit: trop d'arguments\n", arg[0]);
-		return (1);
+		(*env)->return_value = 1;
+		return (0);
 	}
-	return (0);
+	val = ft_atoi(arg[1]);
+	if (val >= 0)
+		(*env)->return_value = val;
+	if (val < 0)
+		(*env)->return_value = 256 + val;
+	printf("exit\n");
+	(*env)->exit = 1;
+	return (1);
 }
