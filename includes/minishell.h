@@ -6,7 +6,7 @@
 /*   By: adupuy <adupuy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/02 10:01:59 by adupuy            #+#    #+#             */
-/*   Updated: 2021/03/22 15:10:22 by adupuy           ###   ########.fr       */
+/*   Updated: 2021/03/26 11:46:11 by adupuy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@
 # include <errno.h>
 
 # define CHAR_PROTEC "\"\'\\`$"
+# define META_CHAR "|&;()<> "
 
 typedef struct	s_list_cmd
 {
@@ -45,6 +46,9 @@ typedef struct	s_list_cmd
 typedef struct	s_env
 {
 	char	**var_env;
+	char	*tilde;
+	int	return_value;
+	int	exit;
 	size_t	size;
 }			t_env;
 
@@ -137,6 +141,7 @@ char	**my_split(char *str, int j);
 	***** PROCESS SHELL *****
 */
 int	process_shell(t_env *env, t_list_cmd **cmd);
+char	*edit_arg(char *str, t_env *env);
 
 /*
 	***** UTILS *****
@@ -144,6 +149,7 @@ int	process_shell(t_env *env, t_list_cmd **cmd);
 int	empty_line(char  **line, int i);
 int	check_redir(char *line, int i);
 int	ft_my_strncmp(char *s1, char *s2, size_t n);
+char	*clean_line(char *line);
 
 
 /*
@@ -158,5 +164,18 @@ void	print_struct_complete(t_list_cmd **cmd);
 void	print_struct(t_list_cmd *lst);
 void	print_arg_cmd(char **arg_cmd);
 void	print_lst(t_list *lst);
+
+/*
+	***** BUILT *****
+*/
+int	ft_echo(char **arg, t_env *env);
+int	ft_pwd(char **arg, t_env *env);
+int	ft_env(char **arg, t_env *env);
+int	ft_unset(char **arg, t_env **env);
+int	ft_export(char **arg, t_env **env);
+int	ft_cd(char **arg, t_env **env);
+int	ft_exit(char **arg, t_env **env);
+char	*get_var_env(t_env **env, char *str);
+char	*get_value_var_env(char *str);
 
 #endif

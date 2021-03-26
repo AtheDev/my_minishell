@@ -6,7 +6,7 @@
 /*   By: adupuy <adupuy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/12 14:06:16 by adupuy            #+#    #+#             */
-/*   Updated: 2021/03/18 14:13:18 by adupuy           ###   ########.fr       */
+/*   Updated: 2021/03/24 10:27:33 by adupuy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,3 +72,16 @@ int	ft_my_strncmp(char *s1, char *s2, size_t n)
 	return (0);
 }
 
+char	*clean_line(char *str)
+{
+	int	i;
+
+	i = ft_strlen(str);
+	if (ft_isspace(str[i - 1]) == 1)
+	{
+		while (ft_isspace(str[i - 1]) == 1)
+			i--;
+	}
+	str = ft_substr(str, 0, i);
+	return (str);
+}

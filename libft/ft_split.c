@@ -6,7 +6,7 @@
 /*   By: adupuy <adupuy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/18 11:03:35 by adupuy            #+#    #+#             */
-/*   Updated: 2020/12/02 17:03:09 by adupuy           ###   ########.fr       */
+/*   Updated: 2021/03/16 10:15:29 by adupuy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ static char	*ft_new_str(char *s, char c)
 	return (str);
 }
 
-static void	*ft_free(char **split, int j)
+void	*ft_free(char **split, int j)
 {
 	while (j >= 0)
 	{

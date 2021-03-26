@@ -6,7 +6,7 @@
 /*   By: adupuy <adupuy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/18 13:51:03 by adupuy            #+#    #+#             */
-/*   Updated: 2021/03/22 14:07:11 by adupuy           ###   ########.fr       */
+/*   Updated: 2021/03/26 11:38:39 by adupuy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,21 @@ void	clear_cmd(t_list_cmd *cmd)
 	free(cmd);
 }
 
+int	print_prompt(t_env *env)
+{
+	(void)env;
+	char	*value;
+	char	*prompt;
+
+	value = getcwd(NULL, 0);
+	write(0, "\033[32mminishell\033[37m:", 21);
+	prompt = "\033[34m";
+	prompt = ft_strjoin(prompt, value);
+	prompt = ft_strjoin(prompt, "\033[37m");
+	ft_putstr_fd(prompt, 0);
+	write(0, "$> ", 3);
+	return (1);
+}
 
 int	main(int argc, char **argv, char **envp)
 {
@@ -77,7 +92,8 @@ int	main(int argc, char **argv, char **envp)
 	cmd_tmp = NULL;
 	cmd = NULL;
 	line = NULL;	
-		write(0, "$> ", 3);
+		//write(0, "$> ", 3);
+		print_prompt(&env);
 		ret = get_next_line(0, &line, 0);
 		if (ret == -1)
 			printf("Error lors de la lecture de l'input du user\n");
@@ -107,6 +123,8 @@ int	main(int argc, char **argv, char **envp)
 		if (line != NULL)
 			free(line);
 	//	clear_env(&env);
+		if (env.exit == 1)
+			return (env.return_value);
 	}
 	return (0);
 }

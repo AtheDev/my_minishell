@@ -6,7 +6,7 @@
 /*   By: adupuy <adupuy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/17 17:40:59 by adupuy            #+#    #+#             */
-/*   Updated: 2021/03/22 10:45:41 by adupuy           ###   ########.fr       */
+/*   Updated: 2021/03/24 11:35:18 by adupuy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,8 +42,8 @@ int		moving_forward(char *str, int i)
 	else
 	{
 		i++;
-		while (str[i] != ' ' ||
-		(str[i] == ' ' && is_escaped(str, i - 1) == 1))
+		while ((str[i] != ' ' ||
+		(str[i] == ' ' && is_escaped(str, i - 1) == 1)) && str[i] != '\0')
 			i++;
 		i--;
 	}
@@ -73,6 +73,13 @@ int		count_word(char *str, int i, int count, int num)
 		else
 			i = moving_forward(str, i);
 		i++;
+		if (str[i] == '\0' && ft_isspace(str[i - 1]) == 0)
+		{
+			j = i - k;
+			if (num == 1)
+				return (j);
+			count += 2;
+		}
 	}
 	return (count);
 }

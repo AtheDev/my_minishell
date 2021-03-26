@@ -6,7 +6,7 @@
 /*   By: adupuy <adupuy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/12 11:02:53 by adupuy            #+#    #+#             */
-/*   Updated: 2021/03/12 11:30:07 by adupuy           ###   ########.fr       */
+/*   Updated: 2021/03/26 11:36:14 by adupuy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,13 @@ void	clear_env(t_env *env)
 	while (env->var_env[++i])
 		free(env->var_env[i]);
 	free(env->var_env);
+}
+
+void	add_elt_env(t_env *env)
+{
+	env->exit = 0;
+	env->return_value = 0;
+	env->tilde = get_value_var_env(get_var_env(&env, "HOME"));
 }
 
 t_env	copy_env(char **envp)
@@ -46,6 +53,7 @@ t_env	copy_env(char **envp)
 		}
 	}
 	env.var_env[i] = NULL;
+	add_elt_env(&env);
 //	for(i = 0; i < env.size; i++)
 //		printf("env.var_env[%zu] = %s\n       envp[%zu] = %s\n\n", i, env.var_env[i], i, envp[i]);
 	return (env);

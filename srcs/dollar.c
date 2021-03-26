@@ -6,7 +6,7 @@
 /*   By: adupuy <adupuy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/12 14:12:06 by adupuy            #+#    #+#             */
-/*   Updated: 2021/03/22 14:15:28 by adupuy           ###   ########.fr       */
+/*   Updated: 2021/03/23 11:15:37 by adupuy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,6 +75,13 @@ int	replace_variable(char **line, int *i, t_env *env)
 	tmp = NULL;
 	tmp2 = NULL;
 	size_var = 0;
+	if (ft_isdigit((*line)[*i + 1]) == 1)
+	{
+		*line = delete_char((*line), i);
+		(*i)++;
+		*line = delete_char((*line), i);
+		return (1);
+	}
 	while ((*line)[++*i] != '\0' && (ft_isalnum((*line)[*i]) == 1
 	|| (*line)[*i] == '_'))
 		size_var++;
@@ -97,6 +104,7 @@ int	replace_variable(char **line, int *i, t_env *env)
 	tmp[j] = '\0';
 //printf("tmp = %s et size_var = %d et *line = %s\n", tmp, size_var, *line);
 	ret = search_var_env(&tmp, env, size_var);
+//printf("ICI tmp = %s\n", tmp);
 	size_tmp = ft_strlen(tmp);
 	if (ret == -1)
 	{

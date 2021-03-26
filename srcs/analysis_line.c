@@ -6,7 +6,7 @@
 /*   By: adupuy <adupuy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/18 14:08:14 by adupuy            #+#    #+#             */
-/*   Updated: 2021/03/22 14:06:01 by adupuy           ###   ########.fr       */
+/*   Updated: 2021/03/24 11:36:14 by adupuy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,10 +30,18 @@ int	analysis_quote(char *line, int *i)
 int	analysis_sep(char **line, int *i, int *start_cmd, t_list **cmd)
 {
 	if (before_char(*line, *i) == 0)
-		return (error_msg(1, (*line)[*i]));
-	*line = add_char(*line, i, (*line)[*i], 1);
-	if (*line == NULL)
-		return (error_msg(2, ' '));
+	{
+		if ((*line)[*i] == ';' || (*line)[*i] == '|')
+			return (error_msg(1, (*line)[*i]));
+		else
+			return (error_msg(1, (*line)[*i - 1]));
+	}
+	if ((*line)[*i] == ';' || (*line)[*i] == '|')
+	{
+		*line = add_char(*line, i, (*line)[*i], 1);
+		if (*line == NULL)
+			return (error_msg(2, ' '));
+	}
 	save_cmd_tmp(cmd, *line, *start_cmd, *i);
 	*start_cmd = *i + 1;
 	return (1);
@@ -41,7 +49,7 @@ int	analysis_sep(char **line, int *i, int *start_cmd, t_list **cmd)
 
 int	analysis_redir(char **line, int *i)
 {
-	if (empty_line(line, *i) == 0 || check_redir(*line, *i) == 0)
+	if ( empty_line(line, *i + 1) == 0 || check_redir(*line, *i) == 0)
 		return (error_msg(1, (*line)[*i]));
 	if ((*line)[*i] == '>' && (*line)[*i + 1] == '>')
 		*line = add_char(*line, i, (*line)[*i], 2);
@@ -58,7 +66,7 @@ int	analysis_line(char **line, int i, t_list **cmd)
 	int	ret;
 
 	start_cmd = 0;
-	if (empty_line(line, 0) == 0)
+	if (empty_line(line, 0) == 0 || (*line = clean_line(*line)) == NULL)
 		return (0);
 	while ((*line)[++i] != '\0')
 	{
@@ -78,5 +86,9 @@ int	analysis_line(char **line, int i, t_list **cmd)
 		if (ret < 1)
 			return (ret);
 	}
+	if ((*line)[i] == '\0' && (*line)[i - 2] != ';')
+		ret = analysis_sep(line, &i, &start_cmd, cmd);
+	if (ret < 1)
+		return (ret);	
 	return (1);
 }
