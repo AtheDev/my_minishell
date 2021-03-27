@@ -6,7 +6,7 @@
 /*   By: adupuy <adupuy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/19 15:39:51 by adupuy            #+#    #+#             */
-/*   Updated: 2021/03/18 10:47:06 by adupuy           ###   ########.fr       */
+/*   Updated: 2021/03/27 10:04:49 by adupuy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ typedef struct	s_list
 	struct s_list	*next;
 }				t_list;
 
-int				ft_atoi(const char *str);
+long long				ft_atoi(const char *str);
 
 void			ft_bzero(void *s, size_t n);
 

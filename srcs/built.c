@@ -6,7 +6,7 @@
 /*   By: adupuy <adupuy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/22 17:22:35 by adupuy            #+#    #+#             */
-/*   Updated: 2021/03/26 13:54:23 by adupuy           ###   ########.fr       */
+/*   Updated: 2021/03/27 10:06:09 by adupuy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -226,19 +226,36 @@ int	process_add_var_env(char *arg, t_env **env)
 	return (1);
 }
 
-int	check_arg_var(char *arg, int cmd)
+/*int	tilde_development(char **arg, char *tilde)
 {
 	int	i;
 
 	i = 0;
-	if (ft_isdigit(arg[i]) == 1)
+	while ((*arg)[i] != '=')
+		i++;
+	i++;
+	if ((*arg)[i] == '~')
+
+	return (1);
+}*/
+
+int	check_arg_var(char **arg, int cmd/*, t_env **env*/)
+{
+	int	i;
+
+	i = 0;
+	if (ft_isdigit((*arg)[i]) == 1)
 		return (0);
-	while (arg[i] != '\0')
+	while ((*arg)[i] != '\0')
 	{
-		if (ft_isalnum(arg[i]) == 0 && arg[i] != '_')
+		if (ft_isalnum((*arg)[i]) == 0 && (*arg)[i] != '_')
 		{
-			if (arg[i] == '=' && cmd == 1)
+			if ((*arg)[i] == '=' && cmd == 1)
+			{
+			//	if ((*arg)[i + 1] == '~')
+			//	tilde_development(arg, env);
 				return (1);
+			}
 			return (0);
 		}
 		i++;
@@ -268,7 +285,7 @@ int	ft_unset(char **arg, t_env **env)
 	{
 		while (arg[i] != NULL)
 		{
-			if (check_arg_var(arg[i], 0) == 1)
+			if (check_arg_var(&arg[i], 0/*, env*/) == 1)
 			{
 				printf("VAR OK\n");
 				if (process_delete_var_env(arg[i], env) == 0)
@@ -314,7 +331,8 @@ int	ft_export(char **arg, t_env **env)
 	{
 		while (arg[i] != NULL)
 		{
-			ret = check_arg_var(arg[i], 1);
+			ret = check_arg_var(&arg[i], 1/*, env*/);
+		//	printf("AFTER TILDE_DELPT = %s\n", arg[i]);
 			if (ret == 1)
 			{
 				printf("EXPORT VAR OK\n");
@@ -322,7 +340,7 @@ int	ft_export(char **arg, t_env **env)
 					return (0);
 			}
 			else if (ret == 0)
-				printf("bash: unset: « %s » : identifiant non valable\n", arg[i]);
+				printf("bash: export: « %s » : identifiant non valable\n", arg[i]);
 			i++;
 		}
 	}
@@ -510,9 +528,27 @@ int	check_value_arg(char *str)
 	return (1);
 }
 
+unsigned long long	long_long_atoi(const char *str)
+{
+	int i;
+	unsigned long long res;
+
+	i = 0;
+	while ((str[i] >= 9 && str[i] <= 13) || str[i] == 32)
+		i++;
+	if (str[i] == '-' || str[i] == '+')
+		i++;
+	res = 0;
+	while (str[i] >= '0' && str[i] <= '9')
+	{
+		res = res * 10 + (str[i] - 48);
+		i++;
+	}
+	return (res);
+}
 int	ft_exit(char **arg, t_env **env)
 {
-	int	val;
+	unsigned long long	val;
 
 	if (arg[1] == NULL)
 	{
@@ -526,7 +562,9 @@ int	ft_exit(char **arg, t_env **env)
 		arg[1] = edit_arg(arg[1], *env);
 		if (arg[1] == NULL)
 			return (0);
-		if (check_value_arg(arg[1]) == 0)
+		val = long_long_atoi(arg[1]);
+		if (check_value_arg(arg[1]) == 0 || (val > 9223372036854775807
+		&& ft_strncmp(arg[1], "-9223372036854775808", 21) != 0))
 		{
 			printf("exit\nbash: exit: %s : argument numérique nécessaire\n", arg[1]);
 			(*env)->return_value = 2;
@@ -540,11 +578,8 @@ int	ft_exit(char **arg, t_env **env)
 		(*env)->return_value = 1;
 		return (0);
 	}
-	val = ft_atoi(arg[1]);
-	if (val >= 0)
-		(*env)->return_value = val;
-	if (val < 0)
-		(*env)->return_value = 256 + val;
+	val = ft_atoi(arg[1]) % 256;
+	(*env)->return_value = val;
 	printf("exit\n");
 	(*env)->exit = 1;
 	return (1);
