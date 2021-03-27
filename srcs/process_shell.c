@@ -6,7 +6,7 @@
 /*   By: adupuy <adupuy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/16 20:34:06 by adupuy            #+#    #+#             */
-/*   Updated: 2021/03/26 11:45:34 by adupuy           ###   ########.fr       */
+/*   Updated: 2021/03/27 09:04:15 by adupuy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,14 @@ char	*edit_arg(char *str, t_env *env)
 				if (char_protec(str[i], CHAR_PROTEC) == 1 &&
 				str[i] != '\'' && is_escaped(str, i - 1) == 1)
 				{
-					i--;
+					if (str[i] == '\\' && str[i + 1] == '\\')
+					{
+						if ((str = delete_char(str, &i)) == NULL)
+							return (NULL);
+						i++;
+					}
+					else
+				{	i--;
 					str = delete_char(str, &i);
 					i++;
 					if (str[i + 1] == '"')
@@ -52,8 +59,15 @@ char	*edit_arg(char *str, t_env *env)
 						str = delete_char(str, &i);
 						break;
 					}
+					}
 				}
-				else if (str[i] == '$' && is_escaped(str, i - 1) == 0)
+			/*	else if (str[i] == '\\' && str[i + 1] == '\\')
+				{
+					if ((str = delete_char(str, &i)) == NULL)
+						return (NULL);
+					i++;
+				}*/
+				else if (str[i] == '$' && is_escaped(str, i - 1) == 0 && str[i + 1] != '"')
 				{
 					if (replace_variable(&str, &i, env) == -1)
 						return (NULL);
@@ -109,7 +123,7 @@ char	*edit_arg(char *str, t_env *env)
 					i++;
 					printf("2 => str = %s et str[%d] = %c\n", str, i, str[i]);
 				}
-				else if (str[i] == '$')
+				else if (str[i] == '$' && str[i + 1] != '\0' && str[i + 1] != '\\')
 				{
 					if (replace_variable(&str, &i, env) == -1)
 						return (NULL);
