@@ -6,7 +6,7 @@
 /*   By: adupuy <adupuy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/12 11:02:53 by adupuy            #+#    #+#             */
-/*   Updated: 2021/03/26 11:36:14 by adupuy           ###   ########.fr       */
+/*   Updated: 2021/03/27 10:43:10 by adupuy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,19 @@ void	add_elt_env(t_env *env)
 	env->tilde = get_value_var_env(get_var_env(&env, "HOME"));
 }
 
+char	*inc_shlvl(char *str)
+{
+	char	*tmp;
+	int	shlvl;
+
+	tmp = get_value_var_env(str);
+	if (tmp == NULL)
+		return (NULL);
+	shlvl = ft_atoi(tmp);
+	tmp = ft_itoa(shlvl + 1);
+	return (ft_strjoin("SHLVL=", tmp));
+}
+
 t_env	copy_env(char **envp)
 {
 	size_t		i;
@@ -44,7 +57,10 @@ t_env	copy_env(char **envp)
 	i = -1;
 	while (++i < env.size - 1)
 	{
-		env.var_env[i] = ft_strdup(envp[i]);
+		if (ft_strncmp(envp[i], "SHLVL", 5) == 0)
+			env.var_env[i] = inc_shlvl(envp[i]);
+		else
+			env.var_env[i] = ft_strdup(envp[i]);
 		if (env.var_env[i] == NULL)
 		{
 			printf("Erreur lors de la copie de 'envp'\n");
