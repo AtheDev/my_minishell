@@ -6,7 +6,7 @@
 /*   By: adupuy <adupuy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/22 17:22:35 by adupuy            #+#    #+#             */
-/*   Updated: 2021/03/27 10:06:09 by adupuy           ###   ########.fr       */
+/*   Updated: 2021/03/29 15:56:54 by adupuy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -168,12 +168,12 @@ char	**add_var_env(char *arg, char **var_env, size_t size)
 {
 	char	**tmp;
 	int	i;
-printf("size = %zu\n", size);
+
 	i = 0;
 	tmp = malloc(sizeof(char *) * (size + 1));
 	if (tmp == NULL)
 		return (NULL);
-	while (i < ((int)size - 2))
+	while (i < ((int)size - 3))
 	{
 		tmp[i] = ft_strdup(var_env[i]);
 		if (tmp[i] == NULL)
@@ -189,8 +189,13 @@ printf("size = %zu\n", size);
 		free_tab(tmp);
 		return (NULL);
 	}
-	i++;
-	tmp[i] = NULL;
+	tmp[i + 1] = ft_strdup(var_env[i]);
+	if (tmp[i + 1] == NULL)
+	{
+		free_tab(tmp);
+		return (NULL);
+	}
+	tmp[i + 2] = NULL;
 	return (tmp);
 }
 
@@ -299,6 +304,40 @@ int	ft_unset(char **arg, t_env **env)
 	return (1);	
 }
 
+int	sort_env(t_env **env)
+{
+	int	i;
+	t_env	cp_env;
+	char	*tmp;
+
+	cp_env = copy_env((*env)->var_env, 0);
+	if (cp_env.var_env == NULL)
+		return (0);
+	i = 0;
+	while (cp_env.var_env[i + 1] != NULL)
+	{
+		if (ft_strncmp(cp_env.var_env[i + 1], cp_env.var_env[i], ft_strlen(cp_env.var_env[i])) < 0)
+		{
+			tmp = ft_strdup(cp_env.var_env[i]);
+			free(cp_env.var_env[i]);
+			cp_env.var_env[i] = ft_strdup(cp_env.var_env[i + 1]);
+			free(cp_env.var_env[i + 1]);
+			cp_env.var_env[i + 1] = ft_strdup(tmp);
+			i = 0;
+		}
+		else
+			i++;
+	}
+	i = 0;
+	while (cp_env.var_env[i] != NULL)
+	{
+		if (ft_strncmp(cp_env.var_env[i], "_=", 2) != 0)
+			printf("declare -x %s=\"%s\"\n", get_key_var_env(cp_env.var_env[i]), get_value_var_env(get_var_env(env, cp_env.var_env[i])));
+		i++;
+	}
+	return (1);
+}
+
 int	ft_export(char **arg, t_env **env)
 {
 	int	i;
@@ -308,12 +347,8 @@ int	ft_export(char **arg, t_env **env)
 	ret = 0;
 	if (arg[i] == NULL)
 	{
-		i = 0;
-		while ((*env)->var_env[i] != NULL)
-		{
-			printf("declare -x %s\n", (*env)->var_env[i]);
-			i++;
-		}
+		if (sort_env(env) == 0)
+			return (0);
 		return (1);
 	}
 	if (arg[i] != NULL)
@@ -350,12 +385,30 @@ int	ft_export(char **arg, t_env **env)
 char	*get_value_var_env(char *str)
 {
 	char	*value;
+	int	i;
 
+	i = 0;
 	if (str == NULL)
 		return (NULL);
-	value = ft_strrchr(str, '=') + 1;
+	while (str[i] != '=')
+		i++;
+	value = ft_substr(str, i + 1, ft_strlen(str) - i);
 //printf("value = %s\n", value);
 	return (value);
+}
+
+char	*get_key_var_env(char *str)
+{
+	char	*key;
+	int	i;
+
+	i = 0;
+	while (str[i] != '=')
+		i++;
+	key = ft_substr(str, 0, i);
+	if (key == NULL)
+		return (NULL);
+	return (key);
 }
 
 char	*get_var_env(t_env **env, char *str)
@@ -388,30 +441,30 @@ int	process_cd(t_env **env, char *var_env, int num)
 
 	if (num == 0)
 	{
-	var = get_var_env(env, var_env);
-	pwd = get_var_env(env, "PWD");
-	if (ft_strncmp(var_env, "OLDPWD", 6) == 0)
-	{
-		if (pwd == NULL && (var == NULL ||  var[ft_strlen(var_env) + 1] == '\0'))
+		var = get_var_env(env, var_env);
+		pwd = get_var_env(env, "PWD");
+		if (ft_strncmp(var_env, "OLDPWD", 6) == 0)
+		{
+			if (pwd == NULL && (var == NULL ||  var[ft_strlen(var_env) + 1] == '\0'))
+			{
+				printf("bash: cd: « %s » non défini\n", var_env);
+				if (process_delete_var_env(var_env, env) == 0)
+					return (0);
+				return (1);
+			}
+			
+		}
+		if (var == NULL)
 		{
 			printf("bash: cd: « %s » non défini\n", var_env);
-			if (process_delete_var_env(var_env, env) == 0)
-				return (0);
+			return (0);
+		}
+		if (var[ft_strlen(var_env) + 1] == '\0')
+		{
+			printf("Pas d'erreur => change le prompt \'~\' en \'/home/user42\'\n");
 			return (1);
 		}
-			
-	}
-	if (var == NULL)
-	{
-		printf("bash: cd: « %s » non défini\n", var_env);
-		return (0);
-	}
-	if (var[ft_strlen(var_env) + 1] == '\0')
-	{
-		printf("Pas d'erreur => change le prompt \'~\' en \'/home/user42\'\n");
-		return (1);
-	}
-	path = get_value_var_env(var);
+		path = get_value_var_env(var);
 	}
 	else
 		path = var_env;

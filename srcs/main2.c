@@ -6,7 +6,7 @@
 /*   By: adupuy <adupuy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/18 13:51:03 by adupuy            #+#    #+#             */
-/*   Updated: 2021/03/26 11:38:39 by adupuy           ###   ########.fr       */
+/*   Updated: 2021/03/29 15:56:16 by adupuy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,14 +80,14 @@ int	main(int argc, char **argv, char **envp)
 	t_list	*cmd_tmp;
 	t_list_cmd	*cmd;	
 
-	env = copy_env(envp);
+	env = copy_env(envp, 1);
 	if (env.var_env == NULL)
 		return (EXIT_FAILURE);
 	ret = 0;
 	line = NULL;
 //	cmd_tmp = NULL;
 //	cmd = NULL;
-	while (1)
+	while (env.exit == 0)
 	{
 	cmd_tmp = NULL;
 	cmd = NULL;
@@ -123,9 +123,9 @@ int	main(int argc, char **argv, char **envp)
 		if (line != NULL)
 			free(line);
 	//	clear_env(&env);
-		if (env.exit == 1)
-			return (env.return_value);
 	}
-	return (0);
+	return (env.return_value);
+//	}
+//	return (0);
 }
 

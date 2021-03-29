@@ -6,7 +6,7 @@
 /*   By: adupuy <adupuy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/12 11:02:53 by adupuy            #+#    #+#             */
-/*   Updated: 2021/03/27 10:43:10 by adupuy           ###   ########.fr       */
+/*   Updated: 2021/03/29 15:55:46 by adupuy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ char	*inc_shlvl(char *str)
 	return (ft_strjoin("SHLVL=", tmp));
 }
 
-t_env	copy_env(char **envp)
+t_env	copy_env(char **envp, int init)
 {
 	size_t		i;
 	t_env	env;
@@ -57,7 +57,7 @@ t_env	copy_env(char **envp)
 	i = -1;
 	while (++i < env.size - 1)
 	{
-		if (ft_strncmp(envp[i], "SHLVL", 5) == 0)
+		if (ft_strncmp(envp[i], "SHLVL", 5) == 0 && init == 1)
 			env.var_env[i] = inc_shlvl(envp[i]);
 		else
 			env.var_env[i] = ft_strdup(envp[i]);
